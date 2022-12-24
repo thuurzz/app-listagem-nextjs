@@ -11,10 +11,11 @@ import {
   TableFooter,
   TableHead,
   TableRow,
+  Typography,
 } from "@mui/material";
 import api from "../services/api";
 import { AxiosError } from "axios";
-import { LockOpen } from "@mui/icons-material";
+import { Delete, Edit, LockOpen, Title } from "@mui/icons-material";
 
 type ISenha = {
   id: string;
@@ -46,14 +47,6 @@ export default function Home() {
     }
   };
 
-  const rows = senhas.map((segredo) => {
-    return {
-      id: segredo.id,
-      chave: segredo.chave,
-      valor: segredo.valor,
-    };
-  });
-
   type ILabelSenha = {
     senha: string;
   };
@@ -65,14 +58,16 @@ export default function Home() {
       <>
         <Input
           type={exibir ? "text" : "password"}
-          value={senha !== "null" ? senha : "Não pode ser exibido"}
+          value={senha !== "null" ? senha : "Não permitido"}
         />
-        <Button sx={{ ml: "0.5rem" }}>
-          <LockOpen
-            onClick={() => {
-              setExibir(!exibir);
-            }}
-          />
+        <Button
+          disabled={senha === "null" ? true : false}
+          sx={{ ml: "0.25rem" }}
+          onClick={() => {
+            setExibir(!exibir);
+          }}
+        >
+          <LockOpen />
         </Button>
       </>
     );
@@ -85,22 +80,43 @@ export default function Home() {
         variant="elevation"
         sx={{ m: 1, width: "auto" }}
       >
+        <Typography textAlign={"left"} variant="h3" sx={{ m: "1rem" }}>
+          Listagem de Segredos
+        </Typography>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>UUID</TableCell>
-              <TableCell>CHAVE</TableCell>
-              <TableCell>VALOR</TableCell>
-              <TableCell>AÇÕES</TableCell>
+              <TableCell width={"30%"}>UUID</TableCell>
+              <TableCell width={"20%"}>CHAVE</TableCell>
+              <TableCell width={"30%"}>VALOR</TableCell>
+              <TableCell width={"20%"}>AÇÕES</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {senhas.map((row) => (
               <TableRow key={row.id}>
                 <TableCell>{row.id}</TableCell>
                 <TableCell>{row.chave}</TableCell>
                 <TableCell>
                   <LabelSenha senha={row.valor} />
+                </TableCell>
+                <TableCell>
+                  <Button
+                    sx={{ ml: "0.25rem" }}
+                    onClick={() => {
+                      console.log(`Editando senha: ${row.id}`);
+                    }}
+                  >
+                    <Edit />
+                  </Button>
+                  <Button
+                    sx={{ ml: "0.25rem" }}
+                    onClick={() => {
+                      console.log(`Deletando senha: ${row.id}`);
+                    }}
+                  >
+                    <Delete />
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
