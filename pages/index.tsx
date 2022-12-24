@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   Button,
+  Input,
   LinearProgress,
   Paper,
   Table,
@@ -13,6 +14,7 @@ import {
 } from "@mui/material";
 import api from "../services/api";
 import { AxiosError } from "axios";
+import { LockOpen } from "@mui/icons-material";
 
 type ISenha = {
   id: string;
@@ -24,7 +26,6 @@ type ISenha = {
 export default function Home() {
   const [senhas, setSenhas] = useState<ISenha[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [showKey, setShowKey] = useState<boolean>(false);
 
   useEffect(() => {
     handleBuscaSenhas();
@@ -50,9 +51,32 @@ export default function Home() {
       id: segredo.id,
       chave: segredo.chave,
       valor: segredo.valor,
-      showKey: showKey,
     };
   });
+
+  type ILabelSenha = {
+    senha: string;
+  };
+
+  const LabelSenha = ({ senha }: ILabelSenha) => {
+    const [exibir, setExibir] = useState(false);
+
+    return (
+      <>
+        <Input
+          type={exibir ? "text" : "password"}
+          value={senha !== "null" ? senha : "Não pode ser exibido"}
+        />
+        <Button sx={{ ml: "0.5rem" }}>
+          <LockOpen
+            onClick={() => {
+              setExibir(!exibir);
+            }}
+          />
+        </Button>
+      </>
+    );
+  };
 
   return (
     <>
@@ -75,16 +99,8 @@ export default function Home() {
               <TableRow key={row.id}>
                 <TableCell>{row.id}</TableCell>
                 <TableCell>{row.chave}</TableCell>
-                <TableCell>{row.showKey ? row.valor : "********"}</TableCell>
                 <TableCell>
-                  <Button
-                    variant="outlined"
-                    onClick={() => {
-                      setShowKey(!showKey);
-                    }}
-                  >
-                    Mostar
-                  </Button>
+                  <LabelSenha senha={row.valor} />
                 </TableCell>
               </TableRow>
             ))}
