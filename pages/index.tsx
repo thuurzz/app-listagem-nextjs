@@ -1,7 +1,18 @@
 import { useEffect, useState } from "react";
+import {
+  Button,
+  LinearProgress,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableFooter,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import api from "../services/api";
-import { Box, Typography } from "@mui/material";
-import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
+import { AxiosError } from "axios";
 
 type ISenha = {
   id: string;
@@ -12,41 +23,83 @@ type ISenha = {
 
 export default function Home() {
   const [senhas, setSenhas] = useState<ISenha[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showKey, setShowKey] = useState<boolean>(false);
 
   useEffect(() => {
     handleBuscaSenhas();
   }, []);
 
   const handleBuscaSenhas = async () => {
-    const resp = await api.get("/api/cofre");
-    const senhas: ISenha[] = await resp.data;
-    setSenhas(senhas);
+    setIsLoading(true);
+    try {
+      const resp = await api.get("/api/cofre");
+      const senhas: ISenha[] = await resp.data;
+      setSenhas(senhas);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error);
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const columns: GridColDef[] = [
-    { field: "id", headerName: "UUID", width: 300 },
-    { field: "chave", headerName: "CHAVE", width: 100 },
-    { field: "valor", headerName: "VALOR", width: 100 },
-  ];
-
   const rows = senhas.map((segredo) => {
-    return { id: segredo.id, chave: segredo.chave, valor: segredo.valor };
+    return {
+      id: segredo.id,
+      chave: segredo.chave,
+      valor: segredo.valor,
+      showKey: showKey,
+    };
   });
 
   return (
     <>
-      <Box sx={{ height: "600px", width: "auto", margin: "1rem" }}>
-        <Typography variant="h1" sx={{ mb: 2 }}>
-          Listagem de Segredos
-        </Typography>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          experimentalFeatures={{ newEditingApi: true }}
-        />
-      </Box>
+      <TableContainer
+        component={Paper}
+        variant="elevation"
+        sx={{ m: 1, width: "auto" }}
+      >
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>UUID</TableCell>
+              <TableCell>CHAVE</TableCell>
+              <TableCell>VALOR</TableCell>
+              <TableCell>AÇÕES</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((row) => (
+              <TableRow key={row.id}>
+                <TableCell>{row.id}</TableCell>
+                <TableCell>{row.chave}</TableCell>
+                <TableCell>{row.showKey ? row.valor : "********"}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      setShowKey(!showKey);
+                    }}
+                  >
+                    Mostar
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+          <TableFooter>
+            {isLoading && (
+              <TableRow>
+                <TableCell colSpan={3}>
+                  <LinearProgress />
+                </TableCell>
+              </TableRow>
+            )}
+          </TableFooter>
+        </Table>
+      </TableContainer>
     </>
   );
 }
