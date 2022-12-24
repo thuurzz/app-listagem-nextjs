@@ -1,4 +1,10 @@
-import { LockOpen, Edit, Delete } from "@mui/icons-material";
+import {
+  LockOpen,
+  Edit,
+  Delete,
+  Check,
+  Cancel,
+} from "@mui/icons-material";
 import { Input, Button } from "@mui/material";
 import { useState } from "react";
 import { ISenha } from ".";
@@ -9,37 +15,74 @@ type ILabelSenha = {
 
 export const LabelSenha = ({ senha }: ILabelSenha) => {
   const [exibir, setExibir] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [newValue, setNewValue] = useState("");
+
+  const updateValueKey = (id: string, newValue: string) => {
+    console.log(`Alterando valor da chave: ${id} para: ${newValue}`);
+    setIsEditing(false);
+    setNewValue("");
+  };
 
   return (
     <>
       <Input
-        type={exibir ? "text" : "password"}
-        value={senha.valor !== "null" ? senha.valor : "Não permitido"}
+        type={isEditing ? "text" : exibir ? "text" : "password"}
+        value={
+          isEditing
+            ? newValue
+            : senha.valor !== "null"
+            ? senha.valor
+            : "Não permitido"
+        }
+        onChange={(e) => setNewValue(e.target.value)}
       />
-      <Button
-        disabled={senha.valor === "null" ? true : false}
-        onClick={() => {
-          setExibir(!exibir);
-          console.log(senha.valor);
-        }}
-      >
-        <LockOpen />
-      </Button>
-      <Button
-        onClick={() => {
-          console.log(`Editando senha: ${senha.id}`);
-        }}
-      >
-        <Edit />
-      </Button>
-      <Button
-        sx={{ ml: "0.25rem" }}
-        onClick={() => {
-          console.log(`Deletando senha: ${senha.id}`);
-        }}
-      >
-        <Delete />
-      </Button>
+      {isEditing ? (
+        <>
+          <Button
+            onClick={() => {
+              updateValueKey(senha.id, newValue);
+            }}
+          >
+            <Check />
+          </Button>
+          <Button
+            onClick={() => {
+              console.log("Operação cancelada");
+              setIsEditing(false);
+            }}
+          >
+            <Cancel />
+          </Button>
+        </>
+      ) : (
+        <>
+          <Button
+            disabled={senha.valor === "null" ? true : false}
+            onClick={() => {
+              setExibir(!exibir);
+            }}
+          >
+            <LockOpen />
+          </Button>
+          <Button
+            onClick={() => {
+              console.log(`Editando senha: ${senha.id}`);
+              setIsEditing(true);
+            }}
+          >
+            <Edit />
+          </Button>
+          <Button
+            sx={{ ml: "0.25rem" }}
+            onClick={() => {
+              console.log(`Deletando senha: ${senha.id}`);
+            }}
+          >
+            <Delete />
+          </Button>
+        </>
+      )}
     </>
   );
 };
