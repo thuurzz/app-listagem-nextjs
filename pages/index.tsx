@@ -15,9 +15,9 @@ import {
 } from "@mui/material";
 import api from "../services/api";
 import { AxiosError } from "axios";
-import { Delete, Edit, LockOpen, Title } from "@mui/icons-material";
+import { LabelSenha } from "./LabelSenha";
 
-type ISenha = {
+export type ISenha = {
   id: string;
   chave: string;
   valor: string;
@@ -47,32 +47,6 @@ export default function Home() {
     }
   };
 
-  type ILabelSenha = {
-    senha: string;
-  };
-
-  const LabelSenha = ({ senha }: ILabelSenha) => {
-    const [exibir, setExibir] = useState(false);
-
-    return (
-      <>
-        <Input
-          type={exibir ? "text" : "password"}
-          value={senha !== "null" ? senha : "Não permitido"}
-        />
-        <Button
-          disabled={senha === "null" ? true : false}
-          sx={{ ml: "0.25rem" }}
-          onClick={() => {
-            setExibir(!exibir);
-          }}
-        >
-          <LockOpen />
-        </Button>
-      </>
-    );
-  };
-
   return (
     <>
       <TableContainer
@@ -80,8 +54,12 @@ export default function Home() {
         variant="elevation"
         sx={{ m: 1, width: "auto" }}
       >
-        <Typography textAlign={"left"} variant="h3" sx={{ m: "1rem" }}>
-          Listagem de Segredos
+        <Typography
+          textAlign={"left"}
+          variant="h3"
+          sx={{ m: "1rem", color: "#1976d2" }}
+        >
+          🔒 Listagem de Segredos
         </Typography>
         <Table>
           <TableHead>
@@ -89,7 +67,6 @@ export default function Home() {
               <TableCell width={"30%"}>UUID</TableCell>
               <TableCell width={"20%"}>CHAVE</TableCell>
               <TableCell width={"30%"}>VALOR</TableCell>
-              <TableCell width={"20%"}>AÇÕES</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -98,25 +75,7 @@ export default function Home() {
                 <TableCell>{row.id}</TableCell>
                 <TableCell>{row.chave}</TableCell>
                 <TableCell>
-                  <LabelSenha senha={row.valor} />
-                </TableCell>
-                <TableCell>
-                  <Button
-                    sx={{ ml: "0.25rem" }}
-                    onClick={() => {
-                      console.log(`Editando senha: ${row.id}`);
-                    }}
-                  >
-                    <Edit />
-                  </Button>
-                  <Button
-                    sx={{ ml: "0.25rem" }}
-                    onClick={() => {
-                      console.log(`Deletando senha: ${row.id}`);
-                    }}
-                  >
-                    <Delete />
-                  </Button>
+                  <LabelSenha senha={row} />
                 </TableCell>
               </TableRow>
             ))}
