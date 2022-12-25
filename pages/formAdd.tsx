@@ -1,11 +1,8 @@
 import { useState } from "react";
-import { ISenha } from "../../types/types";
+import { ISenha } from "../types/types";
 import {
-  Alert,
-  AlertTitle,
   Box,
   Button,
-  Checkbox,
   FormControlLabel,
   FormGroup,
   FormLabel,
@@ -15,9 +12,8 @@ import {
   RadioGroup,
   Typography,
 } from "@mui/material";
-import { style } from "./styles";
 import { LockOpen } from "@mui/icons-material";
-import api from "../../services/api";
+import api from "../services/api";
 import { AxiosError } from "axios";
 
 type ISenhaPost = Omit<ISenha, "id">;
@@ -27,11 +23,11 @@ type IFormAddProps = {
   onCloseFormAdd: () => void;
 };
 
-export const FormAdd = ({ onCloseFormAdd, openForm }: IFormAddProps) => {
+export default function FormAdd({ onCloseFormAdd, openForm }: IFormAddProps) {
   const [valor, setValor] = useState<string>("");
   const [chave, setChave] = useState<string>("");
   const [ambiente, setAmbiente] = useState<string>("");
-  const [exibir, setExibir] = useState<boolean>(false);
+  const [exibir, setExibir] = useState<boolean>(true);
 
   const handleSubmit = async () => {
     if (!valor || !chave || !ambiente) {
@@ -62,8 +58,22 @@ export const FormAdd = ({ onCloseFormAdd, openForm }: IFormAddProps) => {
     setAmbiente("");
     setChave("");
     setValor("");
+    setExibir(true);
     onCloseFormAdd();
   }
+
+  const style = {
+    position: "absolute" as "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "1px solid #000",
+    boxShadow: 24,
+    p: 4,
+    borderRadius: "0.5rem",
+  };
 
   return (
     <>
@@ -102,7 +112,7 @@ export const FormAdd = ({ onCloseFormAdd, openForm }: IFormAddProps) => {
                 setExibir(!exibir);
               }}
             >
-              Exibir senha {""}
+              esconder/exibir senha {""}
               <LockOpen />
             </Button>
             <Box sx={{ mb: "2rem" }}>
@@ -121,4 +131,4 @@ export const FormAdd = ({ onCloseFormAdd, openForm }: IFormAddProps) => {
       </Modal>
     </>
   );
-};
+}
