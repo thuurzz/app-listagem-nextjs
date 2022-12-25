@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  Button,
   LinearProgress,
   Paper,
   Table,
@@ -15,10 +16,14 @@ import api from "../services/api";
 import { AxiosError } from "axios";
 import { LabelSenha } from "./labelSenha";
 import { ISenha } from "../types/types";
+import { Add } from "@mui/icons-material";
+import { FormAdd } from "./FormAdd";
 
 export default function Home() {
   const [senhas, setSenhas] = useState<ISenha[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const [openFormAdd, setOpenFormAdd] = useState<boolean>(false);
 
   useEffect(() => {
     handleBuscaSenhas();
@@ -39,8 +44,13 @@ export default function Home() {
     }
   };
 
+  const onCloseFormAdd = () => {
+    setOpenFormAdd(false);
+  };
+
   return (
     <>
+      <FormAdd openForm={openFormAdd} onCloseFormAdd={onCloseFormAdd} />
       <TableContainer
         component={Paper}
         variant="elevation"
@@ -51,8 +61,17 @@ export default function Home() {
           variant="h3"
           sx={{ m: "1rem", color: "#1976d2" }}
         >
-          🔒 Listagem de Segredos
+          🔒 Listagem de Segredos{" "}
+          <Button
+            onClick={() => {
+              setOpenFormAdd(true);
+            }}
+            variant="contained"
+          >
+            <Add />
+          </Button>
         </Typography>
+
         <Table>
           <TableHead>
             <TableRow>
