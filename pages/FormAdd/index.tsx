@@ -17,6 +17,8 @@ import {
 } from "@mui/material";
 import { style } from "./styles";
 import { LockOpen } from "@mui/icons-material";
+import api from "../../services/api";
+import { AxiosError } from "axios";
 
 type ISenhaPost = Omit<ISenha, "id">;
 
@@ -31,7 +33,7 @@ export const FormAdd = ({ onCloseFormAdd, openForm }: IFormAddProps) => {
   const [ambiente, setAmbiente] = useState<string>("");
   const [exibir, setExibir] = useState<boolean>(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!valor || !chave || !ambiente) {
       return;
     }
@@ -41,8 +43,19 @@ export const FormAdd = ({ onCloseFormAdd, openForm }: IFormAddProps) => {
       chave: chave,
       valor: valor,
     };
-
-    console.log(segredo);
+    try {
+      const resp = await api.post("/api/addKey", segredo);
+      if (resp.status === 200) {
+        // criar alert toast para sucesso
+        handleClose();
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error);
+      }
+    } finally {
+      // chamar função para atualizar a home
+    }
   };
 
   function handleClose(): void {
@@ -94,14 +107,10 @@ export const FormAdd = ({ onCloseFormAdd, openForm }: IFormAddProps) => {
             </Button>
             <Box sx={{ mb: "2rem" }}>
               <FormLabel component="legend">Ambiente</FormLabel>
-              <RadioGroup
-                defaultValue="dev"
-                row
-                onChange={(e) => setAmbiente(e.target.value)}
-              >
-                <FormControlLabel value="DEV" control={<Radio />} label="DEV" />
-                <FormControlLabel value="HML" control={<Radio />} label="HML" />
-                <FormControlLabel value="PRD" control={<Radio />} label="PRD" />
+              <RadioGroup row onChange={(e) => setAmbiente(e.target.value)}>
+                <FormControlLabel value="dev" control={<Radio />} label="dev" />
+                <FormControlLabel value="hml" control={<Radio />} label="hml" />
+                <FormControlLabel value="prd" control={<Radio />} label="prd" />
               </RadioGroup>
             </Box>
             <Button variant="contained" onClick={handleSubmit}>
