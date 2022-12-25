@@ -7,16 +7,18 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const senha: Senha = req.body;
+  const { id, newValue } = req.body;
   try {
-    const response = await prisma.senha.create({
+    const response = await prisma.senha.update({
+      where: {
+        id,
+      },
       data: {
-        ...senha,
+        valor: newValue,
       },
     });
     res.status(200).json(response);
-  } catch (err) {
-    console.log(err);
-    res.status(403).json({ err: "Error occured while adding a new key." });
+  } catch (error) {
+    res.status(403).json({ err: "Error occured while update a  item." });
   }
 }
