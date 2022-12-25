@@ -13,14 +13,8 @@ import {
 } from "@mui/material";
 import api from "../services/api";
 import { AxiosError } from "axios";
-import { LabelSenha } from "./LabelSenha";
-
-export type ISenha = {
-  id: string;
-  chave: string;
-  valor: string;
-  ambiente: string;
-};
+import { LabelSenha } from "./labelSenha";
+import { ISenha } from "../types/types";
 
 export default function Home() {
   const [senhas, setSenhas] = useState<ISenha[]>([]);
@@ -62,8 +56,9 @@ export default function Home() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell width={"30%"}>UUID</TableCell>
-              <TableCell width={"20%"}>CHAVE</TableCell>
+              <TableCell width={"20%"}>UUID</TableCell>
+              <TableCell width={"10%"}>AMBIENTE</TableCell>
+              <TableCell width={"10%"}>CHAVE</TableCell>
               <TableCell width={"30%"}>VALOR</TableCell>
             </TableRow>
           </TableHead>
@@ -71,6 +66,7 @@ export default function Home() {
             {senhas.map((row) => (
               <TableRow key={row.id}>
                 <TableCell>{row.id}</TableCell>
+                <TableCell>{row.ambiente}</TableCell>
                 <TableCell>{row.chave}</TableCell>
                 <TableCell>
                   <LabelSenha senha={row} />
