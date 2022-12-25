@@ -61,7 +61,7 @@ export default function Home() {
           variant="h3"
           sx={{ m: "1rem", color: "#1976d2" }}
         >
-          🔒 Listagem de Segredos{" "}
+          🔒 Cofre de Senhas{" "}
           <Button
             onClick={() => {
               setOpenFormAdd(true);
