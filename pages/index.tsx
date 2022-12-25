@@ -14,15 +14,15 @@ import {
 } from "@mui/material";
 import api from "../services/api";
 import { AxiosError } from "axios";
-import { LabelSenha } from "./labelSenha";
 import { ISenha } from "../types/types";
 import { Add } from "@mui/icons-material";
-import { FormAdd } from "./FormAdd";
+import FormAdd from "./formAdd";
+import LabelSenha from "./labelSenha";
+
 
 export default function Home() {
   const [senhas, setSenhas] = useState<ISenha[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const [openFormAdd, setOpenFormAdd] = useState<boolean>(false);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function Home() {
   const handleBuscaSenhas = async () => {
     setIsLoading(true);
     try {
-      const resp = await api.get("/api/getKeys");
+      const resp = await api.get("/api/getKey");
       const senhas: ISenha[] = await resp.data;
       setSenhas(senhas);
     } catch (error) {
@@ -88,7 +88,7 @@ export default function Home() {
                 <TableCell>{row.ambiente}</TableCell>
                 <TableCell>{row.chave}</TableCell>
                 <TableCell>
-                  <LabelSenha senha={row} />
+                  <LabelSenha senha={row} updateList={handleBuscaSenhas} />
                 </TableCell>
               </TableRow>
             ))}
