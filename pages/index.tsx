@@ -27,12 +27,12 @@ export default function Home() {
 
   useEffect(() => {
     handleBuscaSenhas();
-  }, []);
+  }, [openFormAdd]);
 
   const handleBuscaSenhas = async () => {
     setIsLoading(true);
     try {
-      const resp = await api.get("/api/cofre");
+      const resp = await api.get("/api/getKeys");
       const senhas: ISenha[] = await resp.data;
       setSenhas(senhas);
     } catch (error) {
