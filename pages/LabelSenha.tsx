@@ -1,13 +1,7 @@
-import {
-  LockOpen,
-  Edit,
-  Delete,
-  Check,
-  Cancel,
-} from "@mui/icons-material";
+import { LockOpen, Edit, Delete, Check, Cancel } from "@mui/icons-material";
 import { Input, Button } from "@mui/material";
 import { useState } from "react";
-import { ISenha } from ".";
+import { ISenha } from "../types/types";
 
 type ILabelSenha = {
   senha: ISenha;
@@ -24,6 +18,12 @@ export const LabelSenha = ({ senha }: ILabelSenha) => {
     setNewValue("");
   };
 
+  const cancelAction = () => {
+    console.log("Operação cancelada");
+    setIsEditing(false);
+    setNewValue("");
+  };
+
   return (
     <>
       <Input
@@ -36,6 +36,7 @@ export const LabelSenha = ({ senha }: ILabelSenha) => {
             : "Não permitido"
         }
         onChange={(e) => setNewValue(e.target.value)}
+        disabled={!isEditing}
       />
       {isEditing ? (
         <>
@@ -48,8 +49,7 @@ export const LabelSenha = ({ senha }: ILabelSenha) => {
           </Button>
           <Button
             onClick={() => {
-              console.log("Operação cancelada");
-              setIsEditing(false);
+              cancelAction();
             }}
           >
             <Cancel />
