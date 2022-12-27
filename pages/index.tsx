@@ -96,7 +96,7 @@ export default function Home() {
           <TableFooter>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={3}>
+                <TableCell colSpan={4}>
                   <LinearProgress />
                 </TableCell>
               </TableRow>
