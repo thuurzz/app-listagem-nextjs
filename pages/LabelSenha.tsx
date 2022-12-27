@@ -1,5 +1,14 @@
 import { LockOpen, Edit, Delete, Check, Cancel } from "@mui/icons-material";
-import { Input, Button } from "@mui/material";
+import {
+  Input,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  TextField,
+  DialogActions,
+} from "@mui/material";
 import { useState } from "react";
 import { ISenha } from "../types/types";
 import api from "../services/api";
@@ -14,6 +23,8 @@ export default function LabelSenha({ senha, updateList }: ILabelSenha) {
   const [exibir, setExibir] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [newValue, setNewValue] = useState("");
+  const [dialogDelete, setDialogDelete] = useState(false);
+  const [textDialog, setTextDialog] = useState("");
 
   const updateValueKey = async (id: string, newValue: string) => {
     try {
@@ -58,6 +69,11 @@ export default function LabelSenha({ senha, updateList }: ILabelSenha) {
     console.log("Operação cancelada");
     setIsEditing(false);
     setNewValue("");
+  };
+
+  const handleClose = () => {
+    setDialogDelete(false);
+    setTextDialog("");
   };
 
   return (
@@ -113,13 +129,44 @@ export default function LabelSenha({ senha, updateList }: ILabelSenha) {
             sx={{ ml: "0.25rem" }}
             onClick={() => {
               console.log(`Deletando senha: ${senha.id}`);
-              deleteKey(senha.id);
+              setDialogDelete(true);
             }}
           >
             <Delete />
           </Button>
         </>
       )}
+
+      {/* Caixa de diálogo para delete */}
+      <Dialog open={dialogDelete} onClose={handleClose}>
+        <DialogTitle>⚠️ Confirmar ação</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Tem certeza que deseja realizar essa ação ? <br />
+            Caso tenha certeza, digite: {senha.chave}
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="textDialog"
+            label="nome do segredo"
+            type="text"
+            fullWidth
+            variant="standard"
+            onChange={(e) => setTextDialog(e.target.value)}
+            value={textDialog}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancelar</Button>
+          <Button
+            disabled={textDialog !== senha.chave}
+            onClick={() => deleteKey(senha.id)}
+          >
+            Confirmar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
