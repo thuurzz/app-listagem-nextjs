@@ -7,5 +7,6 @@ services:
     environment:
       POSTGRES_USER: username
       POSTGRES_PASSWORD: password
+      POSTGRES_DB: cofre
     volumes:
       - ./db-data/:/var/lib/postgresql/data/
