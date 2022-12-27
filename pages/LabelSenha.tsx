@@ -24,6 +24,7 @@ export default function LabelSenha({ senha, updateList }: ILabelSenha) {
   const [isEditing, setIsEditing] = useState(false);
   const [newValue, setNewValue] = useState("");
   const [dialogDelete, setDialogDelete] = useState(false);
+  const [dialogEdit, setDialogEdit] = useState(false);
   const [textDialog, setTextDialog] = useState("");
 
   const updateValueKey = async (id: string, newValue: string) => {
@@ -36,6 +37,7 @@ export default function LabelSenha({ senha, updateList }: ILabelSenha) {
         // criar alert toast para sucesso
         setIsEditing(false);
         setNewValue("");
+        handleClose();
       }
       console.log(resp);
     } catch (error) {
@@ -54,6 +56,7 @@ export default function LabelSenha({ senha, updateList }: ILabelSenha) {
       if (resp.status === 200) {
         // criar alert toast para sucesso
         setIsEditing(false);
+        handleClose();
       }
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -73,6 +76,7 @@ export default function LabelSenha({ senha, updateList }: ILabelSenha) {
 
   const handleClose = () => {
     setDialogDelete(false);
+    setDialogEdit(false);
     setTextDialog("");
   };
 
@@ -94,7 +98,7 @@ export default function LabelSenha({ senha, updateList }: ILabelSenha) {
         <>
           <Button
             onClick={() => {
-              updateValueKey(senha.id, newValue);
+              setDialogEdit(true);
             }}
           >
             <Check />
@@ -149,7 +153,7 @@ export default function LabelSenha({ senha, updateList }: ILabelSenha) {
             autoFocus
             margin="dense"
             id="textDialog"
-            label="nome do segredo"
+            label="nome do objeto"
             type="text"
             fullWidth
             variant="standard"
@@ -162,6 +166,37 @@ export default function LabelSenha({ senha, updateList }: ILabelSenha) {
           <Button
             disabled={textDialog !== senha.chave}
             onClick={() => deleteKey(senha.id)}
+          >
+            Confirmar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Caixa de diálogo para edit */}
+      <Dialog open={dialogEdit} onClose={handleClose}>
+        <DialogTitle>⚠️ Confirmar ação</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Tem certeza que deseja realizar essa ação ? <br />
+            Caso tenha certeza, digite: {senha.chave}
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="textDialog"
+            label="nome do objeto"
+            type="text"
+            fullWidth
+            variant="standard"
+            onChange={(e) => setTextDialog(e.target.value)}
+            value={textDialog}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancelar</Button>
+          <Button
+            disabled={textDialog !== senha.chave}
+            onClick={() => updateValueKey(senha.id, newValue)}
           >
             Confirmar
           </Button>
