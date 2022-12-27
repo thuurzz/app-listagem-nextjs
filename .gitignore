@@ -40,3 +40,6 @@ db-data
 
 #enviroments
 .env
+
+yarn.lock
+package-lock.json
