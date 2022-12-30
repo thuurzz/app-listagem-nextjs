@@ -84,13 +84,7 @@ export default function LabelSenha({ senha, updateList }: ILabelSenha) {
     <>
       <Input
         type={isEditing ? "text" : exibir ? "text" : "password"}
-        value={
-          isEditing
-            ? newValue
-            : senha.ambiente !== "prd"
-            ? senha.valor
-            : "Não permitido"
-        }
+        value={isEditing ? newValue : exibir ? senha.valor : "***************"}
         onChange={(e) => setNewValue(e.target.value)}
         disabled={!isEditing}
       />
