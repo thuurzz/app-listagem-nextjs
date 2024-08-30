@@ -17,8 +17,7 @@ import { AxiosError } from "axios";
 import { ISenha } from "../types/types";
 import { Add } from "@mui/icons-material";
 import FormAdd from "./formAdd";
-import LabelSenha from "./labelSenha";
-
+import LabelSenha from "./label-senha";
 
 export default function Home() {
   const [senhas, setSenhas] = useState<ISenha[]>([]);
